@@ -67,7 +67,7 @@ jobs:
           name: build-${{ matrix.target }}
           path: gomast-${{ matrix.target }}.zip
 
-  create-release-pr:
+  create-release:
     needs: [build]
     runs-on: ubuntu-latest
     steps:

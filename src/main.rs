@@ -6,10 +6,11 @@ use clap::Parser;
 use parse::builder::MockCli;
 
 fn main() {
-    let _ = Cli::parse();
-    let cli = MockCli::new();
+    let cli = Cli::parse();
+    println!("{:?}", cli);
+    let mock = MockCli::new();
     let mut builder = ArgBuilder::new();
-    let result = builder.build(cli);
+    let result = builder.build(mock);
     let gst_launch = Exec::new(
         "gst-launch-1.0".to_string(),
         vec![

@@ -1,10 +1,10 @@
 # gomastreamer
 
-### Thin Rust wrapper for gstreamer, for development, for myself.
+### Thin wrapper for gstreamer, for development, for myself.
 
 ## About
 
-gomastreamer is a Rust wrapper for GStreamer, a multimedia framework for building pipelines to process and transmit multimedia content. This library provides a convenient command line interface for executing GStreamer shell commands on Raspberry Pi OS.
+gomastreamer is a wrapper for GStreamer, a multimedia framework for building pipelines to process and transmit multimedia content. This library provides a convenient command line interface for executing GStreamer shell commands on Raspberry Pi OS.
 
 ## Download
 

@@ -1,6 +1,6 @@
 # gomastreamer
 
-### Thin gstreamer wrapper for development, for myself
+### Thin Rust wrapper for gstreamer, for development, for myself.
 
 ## About
 

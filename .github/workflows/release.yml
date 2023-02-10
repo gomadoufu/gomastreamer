@@ -1,10 +1,10 @@
 name: Rust
 
 on:
+  push:
+    branches: ['main']
   pull_request:
-    types: [closed]
-    branches:
-      - main
+    branches: ['dev']
 
 env:
   CARGO_TERM_COLOR: always
@@ -26,13 +26,7 @@ jobs:
 
     steps:
       - name: Setup code
-        uses: actions/checkout@v3
-
-      - name: Crate Version
-        id: crate-version
-        uses: colathro/crate-version@1.0.0
-        with:
-          file: './Cargo.toml'
+        uses: actions/checkout@v2
 
       - name: Install musl tools
         if: matrix.target == 'x86_64-unknown-linux-musl'
@@ -82,10 +76,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ steps.crate-version.outputs.version }}
-          release_name: Release ${{ steps.crate-version.outputs.version }}
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
           draft: false
-          prerelease: false
+          prerelease: true
       - run: |
           echo '${{ steps.create-release.outputs.upload_url }}' > release_upload_url.txt
       - uses: actions/upload-artifact@v1

@@ -1,3 +1,4 @@
+mod exec;
 mod parse;
 use crate::parse::parse::Cli;
 use clap::Parser;

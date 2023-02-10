@@ -9,7 +9,7 @@
 - [ ] ! ← どうする？
 - [x] test → gst-launch-1.0 videotestsrc ! autovideosink の変換
 - [ ] test sd → gst-launch-1.0 videotestsrc ! video/x-raw,width=1280,height=720,framerate=30/1 ! videoconvert ! autovideosink の変換
-- [ ] コマンドの Map を作る
+- [x] コマンドの Map を作る
 - [x] parse した時点で、選択肢を Enum で型付けする？
 - [ ] gomast show
 - [ ] toml で設定ファイルを読み込む

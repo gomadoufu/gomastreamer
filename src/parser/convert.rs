@@ -108,6 +108,7 @@ fn make_args_vec() -> Vec<(&'static str, &'static str)> {
         ("h264hard", "v4l2h264enc 'video/x-h254,level=(string)4'"),
         ("vp8rtp", "rtpvp8pay"),
         ("vp8soft", "vp8enc"),
+        ("vp8hard", "omxvp8enc"),
     ];
     result
 }

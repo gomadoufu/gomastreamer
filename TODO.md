@@ -1,15 +1,16 @@
-- [ ] gomast -r SD -f h264 janus.jizaipad.jp 7002 --hard → gst-launch-1.0 videotestsrc ! video/x-raw,width=1280,height=720,framerate=30/1 ! videoconvert ! v4l2h264enc ! 'video/x-h264,level=(string)4' ! rtph264pay ! udpsink host=janus.jizaipad.jp port=7002 の変換
+- [x] gomast -r SD -f h264 janus.jizaipad.jp 7002 --hard → gst-launch-1.0 videotestsrc ! video/x-raw,width=1280,height=720,framerate=30/1 ! videoconvert ! v4l2h264enc ! 'video/x-h264,level=(string)4' ! rtph264pay ! udpsink host=janus.jizaipad.jp port=7002 の変換
 - [x] clap でコマンドライン引数をパースする
-- [ ] パースしたコマンドライン引数を gstreamer に渡す
+- [x] パースしたコマンドライン引数を gstreamer に渡す
 - [x] Rust からシェルコマンドを実行する
 - [x] Rust から echo コマンドを実行してみる
 - [x] exec で gstreamer を実行する
 - [x] builder で gstreamer と gomastreamer の対応を担う HashMap を作る
-- [ ] builder で、gstreamer のコマンドを実行するために足りない引数を補う
-- [ ] ! ← どうする？
+- [x] builder で、gstreamer のコマンドを実行するために足りない引数を補う
+- [x] ! ← どうする？
 - [x] test → gst-launch-1.0 videotestsrc ! autovideosink の変換
-- [ ] test sd → gst-launch-1.0 videotestsrc ! video/x-raw,width=1280,height=720,framerate=30/1 ! videoconvert ! autovideosink の変換
+- [x] test sd → gst-launch-1.0 videotestsrc ! video/x-raw,width=1280,height=720,framerate=30/1 ! videoconvert ! autovideosink の変換
 - [x] コマンドの Map を作る
 - [x] parse した時点で、選択肢を Enum で型付けする？
 - [ ] gomast show
 - [ ] toml で設定ファイルを読み込む
+- [ ] dry-run 機能

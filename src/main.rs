@@ -7,10 +7,9 @@ use parser::convert::MockCli;
 
 fn main() {
     let cli = Cli::parse();
-    println!("{:?}", cli);
     let converter = ArgConverter::new();
     let result = converter.convert(cli);
-    println!("{:?}", result);
+    println!("Running: gst-launch-1.0 {}\t", result.join(" "));
     let gst_launch = Exec::new("gst-launch-1.0".to_string(), result);
     gst_launch.exec();
 }

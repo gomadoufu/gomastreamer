@@ -6,6 +6,10 @@
 
 gomastreamer is a Rust wrapper for GStreamer, a multimedia framework for building pipelines to process and transmit multimedia content. This library provides a convenient command line interface for executing GStreamer shell commands on Raspberry Pi OS.
 
+## Download
+
+Linux and MacOS binaries are available from [Release](http://github.com/gomadoufu/gomastreamer/release) page.
+
 ## Usage
 
 The gomast command takes options and arguments, in the format of `gomast [OPTIONS] [HOST] [PORT]`. The HOST and PORT arguments correspond to the host and port arguments of the GStreamer `udpsink` element.

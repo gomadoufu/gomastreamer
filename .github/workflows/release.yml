@@ -55,17 +55,17 @@ jobs:
       - name: Package for linux-musl
         if: matrix.target == 'x86_64-unknown-linux-musl'
         run: |
-          zip --junk-paths rc-${{ matrix.target }} target/${{ matrix.target }}/release/rc
+          zip --junk-paths gomast-${{ matrix.target }} target/${{ matrix.target }}/release/gomast
 
       - name: Package for macOS
         if: matrix.target == 'x86_64-apple-darwin'
         run: |
-          zip --junk-paths rc-${{ matrix.target }} target/${{ matrix.target }}/release/rc
+          zip --junk-paths gomast-${{ matrix.target }} target/${{ matrix.target }}/release/gomast
 
       - uses: actions/upload-artifact@v2
         with:
           name: build-${{ matrix.target }}
-          path: rc-${{ matrix.target }}.zip
+          path: gomast-${{ matrix.target }}.zip
 
   create-release:
     needs: [build]
@@ -109,6 +109,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.upload-url.outputs.url }}
-          asset_path: ./build-${{ matrix.target }}/rc-${{ matrix.target }}.zip
-          asset_name: rc-${{ matrix.target }}.zip
+          asset_path: ./build-${{ matrix.target }}/gomast-${{ matrix.target }}.zip
+          asset_name: gomast-${{ matrix.target }}.zip
           asset_content_type: application/zip

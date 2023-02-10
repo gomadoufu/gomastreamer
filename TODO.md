@@ -1,0 +1,4 @@
+- [ ] gomast -r SD -f h264 janus.jizaipad.jp 7002 --hard → gst-launch-1.0 videotestsrc ! video/x-raw,width=1280,height=720,framerate=30/1 ! videoconvert ! v4l2h264enc ! 'video/x-h264,level=(string)4' ! rtph264pay ! udpsink host=janus.jizaipad.jp port=7002 の変換
+- [ ] clap でコマンドライン引数をパースする
+- [ ] gomast show
+- [ ] toml で設定ファイルを読み込む

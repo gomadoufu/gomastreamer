@@ -47,6 +47,7 @@ mod tests {
     }
 }
 
+#[derive(Debug)]
 pub struct Exec {
     pub command: String,
     pub args: Vec<String>,

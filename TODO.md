@@ -4,7 +4,10 @@
 - [x] Rust からシェルコマンドを実行する
 - [x] Rust から echo コマンドを実行してみる
 - [x] exec で gstreamer を実行する
-- [ ] builder で gstreamer と gomastreamer の対応を担う HashMap を作る
+- [x] builder で gstreamer と gomastreamer の対応を担う HashMap を作る
 - [ ] builder で、gstreamer のコマンドを実行するために足りない引数を補う
+- [ ] ! ← どうする？
+- [x] test → gst-launch-1.0 videotestsrc ! autovideosink の変換
+- [ ] test sd → gst-launch-1.0 videotestsrc ! video/x-raw,width=1280,height=720,framerate=30/1 ! videoconvert ! autovideosink の変換
 - [ ] gomast show
 - [ ] toml で設定ファイルを読み込む

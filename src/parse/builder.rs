@@ -4,7 +4,7 @@ pub struct MockCli {
 }
 
 impl MockCli {
-    fn new() -> MockCli {
+    pub fn new() -> MockCli {
         MockCli {
             input: "test".to_string(),
         }
@@ -33,14 +33,14 @@ pub struct ArgBuilder {
 }
 
 impl ArgBuilder {
-    fn new() -> ArgBuilder {
+    pub fn new() -> ArgBuilder {
         let arg_map = [("test".to_string(), "videotestsrc".to_string())]
             .iter()
             .cloned()
             .collect();
         ArgBuilder { arg_map }
     }
-    fn build(&self, cli: MockCli) -> Vec<String> {
+    pub fn build(&self, cli: MockCli) -> Vec<String> {
         let mut result = vec![];
         result.push(self.arg_map.get(&cli.input).unwrap().to_string());
         result

@@ -1,10 +1,10 @@
 name: Rust
 
 on:
-  push:
-    branches: ['main']
   pull_request:
-    branches: ['dev']
+    types: [closed]
+    branches:
+      - main
 
 env:
   CARGO_TERM_COLOR: always
@@ -67,19 +67,25 @@ jobs:
           name: build-${{ matrix.target }}
           path: gomast-${{ matrix.target }}.zip
 
-  create-release:
+  create-release-pr:
     needs: [build]
     runs-on: ubuntu-latest
     steps:
+      - name: Crate Version
+        id: crate-version
+        uses: colathro/crate-version@1.0.0
+        with:
+          file: './Cargo.toml'
+
       - id: create-release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
+          tag_name: ${{ steps.crate-version.outputs.version }}
+          release_name: Release ${{ steps.crate-version.outputs.version }}
           draft: false
-          prerelease: true
+          prerelease: false
       - run: |
           echo '${{ steps.create-release.outputs.upload_url }}' > release_upload_url.txt
       - uses: actions/upload-artifact@v1

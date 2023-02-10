@@ -8,7 +8,7 @@ gomastreamer is a Rust wrapper for GStreamer, a multimedia framework for buildin
 
 ## Download
 
-Linux and MacOS binaries are available from [Release](http://github.com/gomadoufu/gomastreamer/release) page.
+Linux and MacOS binaries are available from [Release](http://github.com/gomadoufu/gomastreamer/releases) page.
 
 ## Usage
 

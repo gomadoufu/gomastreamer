@@ -13,7 +13,7 @@ The gomast command takes options and arguments, in the format of `gomast [OPTION
 For example, running `gomast -i test -r sd -f vp8` will translate to the following GStreamer shell command:
 
 ```sh
-gst-launch-1.0 videotestsrc ! video/x-raw,width=800,height=600,framerate=30/1 ! videoconvert ! vp8enc ! rtpvp8pay ! udpsink host=http://localhost port=8080
+gst-launch-1.0 videotestsrc ! video/x-raw,width=800,height=600,framerate=30/1 ! videoconvert ! vp8enc ! rtpvp8pay ! udpsink host=localhost port=8080
 ```
 
 And `gomast example.com 5000 -i mipi -r vga -f h254 --hardware` will translate to:

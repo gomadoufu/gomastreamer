@@ -46,3 +46,20 @@ impl ArgBuilder {
         result
     }
 }
+
+fn create_mapping_vec() -> Vec<(&'static str, &'static str)> {
+    let mut result = vec![
+        ("test", "videotestsrc"),
+        ("mipi", "libcamerasrc"),
+        ("usb", "-v v4l2src"),
+        ("vga", "640x480"),
+        ("sd", "1280x720"),
+        ("hd", "1920x1080"),
+        ("h264rtp", "rtph264pay"),
+        ("h264soft", "x264enc"),
+        ("h264hard", "v4l2h264enc 'video/x-h254,level=(string)4'"),
+        ("vp8rtp", "rtpvp8pay"),
+        ("vp8soft", "vp8enc"),
+    ];
+    result
+}

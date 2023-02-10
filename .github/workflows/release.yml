@@ -28,6 +28,12 @@ jobs:
       - name: Setup code
         uses: actions/checkout@v3
 
+      - name: Crate Version
+        id: crate-version
+        uses: colathro/crate-version@1.0.0
+        with:
+          file: './Cargo.toml'
+
       - name: Install musl tools
         if: matrix.target == 'x86_64-unknown-linux-musl'
         run: |
@@ -71,19 +77,13 @@ jobs:
     needs: [build]
     runs-on: ubuntu-latest
     steps:
-      - name: Crate Version
-        id: crate-version
-        uses: colathro/crate-version@1.0.0
-        with:
-          file: '../Cargo.toml'
-
       - id: create-release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ steps.crate-version.outputs.version }}
-          release_name: Release ${{ steps.crate-version.outputs.version }}
+          tag_name: ${{ build.steps.crate-version.outputs.version }}
+          release_name: Release ${{ build.steps.crate-version.outputs.version }}
           draft: false
           prerelease: false
       - run: |

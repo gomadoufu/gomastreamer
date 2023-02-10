@@ -10,4 +10,20 @@ mod tests {
         cmd.arg("hello world");
         cmd.exec();
     }
+
+    #[test]
+    fn test_gstinspect() {
+        let mut cmd = Command::new("gst-inspect-1.0");
+        cmd.arg("videotestsrc");
+        cmd.exec();
+    }
+
+    #[test]
+    fn test_gstlaunch() {
+        let mut cmd = Command::new("gst-launch-1.0");
+        cmd.arg("videotestsrc");
+        cmd.arg("!");
+        cmd.arg("autovideosink");
+        cmd.exec();
+    }
 }

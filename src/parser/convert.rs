@@ -1,28 +1,27 @@
 use super::parse::{Cli, Format, Input, Resolution};
 use std::{collections::HashMap, vec};
 
-pub type MockCli = Cli;
-impl MockCli {
-    pub fn new() -> MockCli {
-        MockCli {
-            show: false,
-            host: "localhost".to_string(),
-            port: 8080,
-            input: super::parse::Input::Test,
-            resolution: super::parse::Resolution::Vga,
-            format: super::parse::Format::Vp8,
-            hardware_encode: false,
-        }
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
+    pub type MockCli = Cli;
+    impl MockCli {
+        pub fn new() -> MockCli {
+            MockCli {
+                show: false,
+                host: "localhost".to_string(),
+                port: 8080,
+                input: Input::Test,
+                resolution: Resolution::Vga,
+                format: Format::Vp8,
+                hardware_encode: false,
+            }
+        }
+    }
     #[test]
     fn test_convert() {
         let cli = MockCli::new();
-        let mut converter = ArgConverter::new();
+        let converter = ArgConverter::new();
         println!("{:?}", converter.arg_map);
         let result = converter.convert(cli);
         println!("{:?}", result);
@@ -49,7 +48,7 @@ impl ArgConverter {
             .collect();
         ArgConverter { arg_map }
     }
-    pub fn convert(self, cli: MockCli) -> Vec<String> {
+    pub fn convert(self, cli: Cli) -> Vec<String> {
         let mut result = vec![];
         let input = match cli.input {
             Input::Test => self.arg_map.get("test").unwrap().to_string(),
@@ -107,6 +106,7 @@ fn make_args_vec() -> Vec<(&'static str, &'static str)> {
         ("h264soft", "x264enc"),
         ("h264hard", "v4l2h264enc 'video/x-h254,level=(string)4'"),
         ("vp8rtp", "rtpvp8pay"),
+        ("h264rtp", "rtph264pay"),
         ("vp8soft", "vp8enc"),
         ("vp8hard", "omxvp8enc"),
     ];

@@ -1,22 +1,15 @@
+mod exec;
+mod parser;
+use crate::exec::exec::Exec;
+use crate::parser::{convert::ArgConverter, parse::Cli};
 use clap::Parser;
-
-/// Simple program to greet a person
-#[derive(Parser, Debug)]
-#[command(author, version, about, long_about = None)]
-struct Args {
-   /// Name of the person to greet
-   #[arg(short, long)]
-   name: String,
-
-   /// Number of times to greet
-   #[arg(short, long, default_value_t = 1)]
-   count: u8,
-}
+use parser::convert::MockCli;
 
 fn main() {
-   let args = Args::parse();
-
-   for _ in 0..args.count {
-       println!("Hello {}!", args.name)
-   }
+    let cli = Cli::parse();
+    let converter = ArgConverter::new();
+    let result = converter.convert(cli);
+    println!("Running: gst-launch-1.0 {}\t", result.join(" "));
+    let gst_launch = Exec::new("gst-launch-1.0".to_string(), result);
+    gst_launch.exec();
 }

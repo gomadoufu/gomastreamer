@@ -3,7 +3,6 @@ mod parser;
 use crate::exec::exec::Exec;
 use crate::parser::{convert::ArgConverter, parse::Cli};
 use clap::Parser;
-use parser::convert::MockCli;
 
 fn main() {
     let cli = Cli::parse();

@@ -4,11 +4,11 @@ use clap::{Parser, ValueEnum};
 #[command(name = "gomastreamer")]
 #[command(author = "gomadoufu")]
 #[command(version = "0.1.0")]
-#[command(about = "gomastreamer:\nThin gstreamer wrapper for development, for myself", long_about = None)]
+#[command(about = "gomastreamer:\nThin Rust wrapper for gstreamer, for development, for myself", long_about = None)]
 pub struct Cli {
     #[arg(long)]
     pub show: bool,
-    #[arg(default_value = "http://localhost")]
+    #[arg(default_value = "localhost")]
     pub host: String,
     #[arg(default_value = "8080")]
     pub port: i32,

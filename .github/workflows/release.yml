@@ -82,8 +82,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ build.steps.crate-version.outputs.version }}
-          release_name: Release ${{ build.steps.crate-version.outputs.version }}
+          tag_name: ${{ steps.crate-version.outputs.version }}
+          release_name: Release ${{ steps.crate-version.outputs.version }}
           draft: false
           prerelease: false
       - run: |

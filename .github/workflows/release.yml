@@ -1,124 +1,15 @@
-name: Rust
+name: release
 
 on:
-  pull_request:
-    branches:
-      - main
-    types: [closed]
-
-env:
-  CARGO_TERM_COLOR: always
+  push:
+    tags:
+      - 'v*.*.*'
 
 jobs:
   build:
-    strategy:
-      matrix:
-        target:
-          - x86_64-unknown-linux-musl
-          - x86_64-apple-darwin
-        include:
-          - target: x86_64-unknown-linux-musl
-            os: ubuntu-latest
-          - target: x86_64-apple-darwin
-            os: macos-latest
-
-    runs-on: ${{ matrix.os }}
-    if: github.event.pull_request.merged == true
-
-    steps:
-      - name: Setup code
-        uses: actions/checkout@v2
-
-      - name: Install musl tools
-        if: matrix.target == 'x86_64-unknown-linux-musl'
-        run: |
-          sudo apt install -qq -y musl-tools --no-install-recommends
-
-      - name: Setup Rust toolchain
-        uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: stable
-          target: ${{ matrix.target }}
-          override: true
-
-      - name: test
-        uses: actions-rs/cargo@v1
-        with:
-          command: test
-
-      - name: Build
-        uses: actions-rs/cargo@v1
-        with:
-          command: build
-          args: --release --target=${{ matrix.target }}
-
-      - name: Package for linux-musl
-        if: matrix.target == 'x86_64-unknown-linux-musl'
-        run: |
-          zip --junk-paths gomast-${{ matrix.target }} target/${{ matrix.target }}/release/gomast
-
-      - name: Package for macOS
-        if: matrix.target == 'x86_64-apple-darwin'
-        run: |
-          zip --junk-paths gomast-${{ matrix.target }} target/${{ matrix.target }}/release/gomast
-
-      - uses: actions/upload-artifact@v2
-        with:
-          name: build-${{ matrix.target }}
-          path: gomast-${{ matrix.target }}.zip
-
-  create-release:
-    needs: [build]
     runs-on: ubuntu-latest
     steps:
-      - name: checkout
-        uses: actions/checkout@v1
-      - name: add tag
+      - uses: actions/checkout@v2
+      - uses: softprops/action-gh-release@v1
         env:
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-          TAG: ${{github.event.pull_request.title}}
-          REPO: ${{github.repository}}
-          COMMIT: ${{github.sha}}
-        run: ./.github/scripts/add-tag.sh
-      - id: create-release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          draft: false
-          prerelease: true
-      - run: |
-          echo '${{ steps.create-release.outputs.upload_url }}' > release_upload_url.txt
-      - uses: actions/upload-artifact@v1
-        with:
-          name: create-release
-          path: release_upload_url.txt
-  upload-release:
-    strategy:
-      matrix:
-        target:
-          - x86_64-unknown-linux-musl
-          - x86_64-apple-darwin
-    needs: [create-release]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/download-artifact@v1
-        with:
-          name: create-release
-      - id: upload-url
-        run: |
-          echo "::set-output name=url::$(cat create-release/release_upload_url.txt)"
-      - uses: actions/download-artifact@v1
-        with:
-          name: build-${{ matrix.target }}
-      - uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.upload-url.outputs.url }}
-          asset_path: ./build-${{ matrix.target }}/gomast-${{ matrix.target }}.zip
-          asset_name: gomast-${{ matrix.target }}.zip
-          asset_content_type: application/zip
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}

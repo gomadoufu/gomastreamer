@@ -2,6 +2,8 @@ name: tag
 
 on:
   pull_request:
+    types: [closed]
+  push:
     branches:
       - main
     paths:
@@ -13,7 +15,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          ref: ${{ github.head_ref }}
           fetch-depth: 2
       - uses: salsify/action-detect-and-tag-new-version@v2
         id: detect_tag

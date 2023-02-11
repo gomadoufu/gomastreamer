@@ -1,15 +1,17 @@
 name: tag
 
 on:
-  push:
+  pull_request:
     branches:
       - main
+    types: [closed]
     paths:
       - Cargo.toml
 
 jobs:
   tag:
     runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
     steps:
       - uses: actions/checkout@v2
         with:

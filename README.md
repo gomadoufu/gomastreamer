@@ -27,3 +27,9 @@ gst-launch-1.0 libcamerasrc ! video/x-raw,width=640,height=480,framerate=30/1 ! 
 ```
 
 For more information on the available options and their usage, run `gomast --help`.
+
+## Future
+
+- [ ] Dry run mode
+- [ ] gomast show (= gst-inspect; show available devices)
+- [ ] load config file

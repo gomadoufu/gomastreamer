@@ -101,7 +101,7 @@ fn make_args_vec() -> Vec<(&'static str, &'static str)> {
         ("mipi", "libcamerasrc"),
         ("usb", "-v v4l2src"),
         ("vga", "width=640,height=480"),
-        ("sd", "width=800,height=600"),
+        ("sd", "width=720,height=480"),
         ("hd", "width=1280,height=720"),
         ("h264soft", "x264enc"),
         ("h264hard", "v4l2h264enc 'video/x-h264,level=(string)4'"),

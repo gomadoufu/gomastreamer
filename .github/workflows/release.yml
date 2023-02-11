@@ -1,9 +1,10 @@
 name: Rust
 
 on:
-  push:
-    tags:
-      - 'v*'
+  pull_request:
+    branches:
+      - master
+    types: [closed]
 
 env:
   CARGO_TERM_COLOR: always
@@ -22,6 +23,7 @@ jobs:
             os: macos-latest
 
     runs-on: ${{ matrix.os }}
+    if: github.event.pull_request.merged == true
 
     steps:
       - name: Setup code

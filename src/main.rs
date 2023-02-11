@@ -1,6 +1,6 @@
-mod exec;
+mod executor;
 mod parser;
-use crate::exec::exec::Exec;
+use crate::executor::exec::Exec;
 use crate::parser::{convert::ArgConverter, parse::Cli};
 use clap::Parser;
 

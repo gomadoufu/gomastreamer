@@ -3,17 +3,17 @@ name: tag
 on:
   pull_request:
     branches:
-      - dev
+      - main
     paths:
       - Cargo.toml
 
 jobs:
   tag:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == true
     steps:
       - uses: actions/checkout@v2
         with:
+          ref: ${{ github.head_ref }}
           fetch-depth: 2
       - uses: salsify/action-detect-and-tag-new-version@v2
         id: detect_tag

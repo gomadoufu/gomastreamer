@@ -3,7 +3,7 @@ name: tag
 on:
   push:
     branches:
-      - main
+      - dev
     paths:
       - Cargo.toml
 

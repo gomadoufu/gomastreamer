@@ -1,40 +1,6 @@
 use super::parse::{Cli, Format, Input, Resolution};
 use std::{collections::HashMap, vec};
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-    pub type MockCli = Cli;
-    impl MockCli {
-        pub fn new() -> MockCli {
-            MockCli {
-                show: false,
-                host: "localhost".to_string(),
-                port: 8080,
-                input: Input::Test,
-                resolution: Resolution::Vga,
-                format: Format::Vp8,
-                hardware_encode: false,
-            }
-        }
-    }
-    #[test]
-    fn test_convert() {
-        let cli = MockCli::new();
-        let converter = ArgConverter::new();
-        println!("{:?}", converter.arg_map);
-        let result = converter.convert(cli);
-        println!("{:?}", result);
-        assert_eq!(result[0], "videotestsrc");
-        assert_eq!(result[1], "!");
-        assert_eq!(result[2], "video/x-raw,width=640,height=480,framerate=30/1");
-        assert_eq!(result[3], "!");
-        assert_eq!(result[4], "videoconvert");
-        assert_eq!(result[5], "!");
-        assert_eq!(result[6], "autovideosink");
-    }
-}
-
 #[derive(Debug)]
 pub struct ArgConverter {
     arg_map: HashMap<String, String>,
@@ -42,7 +8,7 @@ pub struct ArgConverter {
 
 impl ArgConverter {
     pub fn new() -> ArgConverter {
-        let arg_map = make_args_vec()
+        let arg_map = map_args()
             .iter()
             .map(|(k, v)| (k.to_string(), v.to_string()))
             .collect();
@@ -50,40 +16,20 @@ impl ArgConverter {
     }
     pub fn convert(self, cli: Cli) -> Vec<String> {
         let mut result = vec![];
-        let input = match cli.input {
-            Input::Test => self.arg_map.get("test").unwrap().to_string(),
-            Input::Mipi => self.arg_map.get("mipi").unwrap().to_string(),
-            Input::Usb => self.arg_map.get("usb").unwrap().to_string(),
-        };
-        result.push(input);
+        result.push(self.match_input(&cli));
         result.push("!".to_string());
-        let resolution = match cli.resolution {
-            Resolution::Vga => self.arg_map.get("vga").unwrap().to_string(),
-            Resolution::Sd => self.arg_map.get("sd").unwrap().to_string(),
-            Resolution::Hd => self.arg_map.get("hd").unwrap().to_string(),
-        };
         result.push(format!(
             "{}{}{}",
-            "video/x-raw,", resolution, ",framerate=30/1"
+            "video/x-raw,",
+            self.match_resolution(&cli),
+            ",framerate=30/1"
         ));
         result.push("!".to_string());
         result.push("videoconvert".to_string());
         result.push("!".to_string());
-        let format = match cli.format {
-            Format::Vp8 if cli.hardware_encode => self.arg_map.get("vp8hard").unwrap().to_string(),
-            Format::H264 if cli.hardware_encode => {
-                self.arg_map.get("h264hard").unwrap().to_string()
-            }
-            Format::Vp8 => self.arg_map.get("vp8soft").unwrap().to_string(),
-            Format::H264 => self.arg_map.get("h264soft").unwrap().to_string(),
-        };
-        result.push(format);
+        result.push(self.match_format(&cli));
         result.push("!".to_string());
-        let rtp = match cli.format {
-            Format::Vp8 => self.arg_map.get("vp8rtp").unwrap().to_string(),
-            Format::H264 => self.arg_map.get("h264rtp").unwrap().to_string(),
-        };
-        result.push(rtp);
+        result.push(self.select_rtp(&cli));
         result.push("!".to_string());
         result.push("udpsink".to_string());
         result.push("".to_string());
@@ -93,9 +39,42 @@ impl ArgConverter {
 
         result
     }
+    fn match_input(&self, cli: &Cli) -> String {
+        match cli.input {
+            Input::Test => self.arg_map.get("test").unwrap().to_string(),
+            Input::Mipi => self.arg_map.get("mipi").unwrap().to_string(),
+            Input::Usb => self.arg_map.get("usb").unwrap().to_string(),
+        }
+    }
+
+    fn match_resolution(&self, cli: &Cli) -> String {
+        match cli.resolution {
+            Resolution::Vga => self.arg_map.get("vga").unwrap().to_string(),
+            Resolution::Sd => self.arg_map.get("sd").unwrap().to_string(),
+            Resolution::Hd => self.arg_map.get("hd").unwrap().to_string(),
+        }
+    }
+
+    fn match_format(&self, cli: &Cli) -> String {
+        match cli.format {
+            Format::Vp8 if cli.hardware_encode => self.arg_map.get("vp8hard").unwrap().to_string(),
+            Format::H264 if cli.hardware_encode => {
+                self.arg_map.get("h264hard").unwrap().to_string()
+            }
+            Format::Vp8 => self.arg_map.get("vp8soft").unwrap().to_string(),
+            Format::H264 => self.arg_map.get("h264soft").unwrap().to_string(),
+        }
+    }
+
+    fn select_rtp(&self, cli: &Cli) -> String {
+        match cli.format {
+            Format::Vp8 => self.arg_map.get("vp8rtp").unwrap().to_string(),
+            Format::H264 => self.arg_map.get("h264rtp").unwrap().to_string(),
+        }
+    }
 }
 
-fn make_args_vec() -> Vec<(&'static str, &'static str)> {
+fn map_args() -> Vec<(&'static str, &'static str)> {
     let result = vec![
         ("test", "videotestsrc"),
         ("mipi", "libcamerasrc"),

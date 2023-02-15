@@ -6,14 +6,23 @@ use clap::Parser;
 
 fn main() {
     let cli = Cli::parse();
+    let is_dry_run = cli.dry_run;
     if cli.show {
         println!("Showing devices...");
         let gst_device = Exec::new("gst-inspect-1.0".to_string(), vec![]);
+        if is_dry_run {
+            println!("gst-inspect-1.0");
+            return;
+        }
         gst_device.exec();
         return;
     }
     let converter = ArgConverter::new();
     let result = converter.convert(cli);
+    if is_dry_run {
+        println!("gst-launch-1.0 {}", result.join(" "));
+        return;
+    }
     println!("Running: gst-launch-1.0 {}\t", result.join(" "));
     let gst_launch = Exec::new("gst-launch-1.0".to_string(), result);
     gst_launch.exec();

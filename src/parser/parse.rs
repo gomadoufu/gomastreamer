@@ -26,6 +26,9 @@ pub struct Cli {
     /// use hardware encode
     #[arg(long = "hardware")]
     pub hardware_encode: bool,
+    /// dry-run mode
+    #[arg(long = "dry-run")]
+    pub dry_run: bool,
 }
 
 #[derive(Debug, Clone, ValueEnum)]

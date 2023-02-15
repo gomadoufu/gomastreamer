@@ -104,7 +104,7 @@ fn make_args_vec() -> Vec<(&'static str, &'static str)> {
         ("sd", "width=720,height=480"),
         ("hd", "width=1280,height=720"),
         ("h264soft", "x264enc"),
-        ("h264hard", "v4l2h264enc 'video/x-h264,level=(string)4'"),
+        ("h264hard", "v4l2h264enc ! 'video/x-h264,level=(string)4'"),
         ("vp8rtp", "rtpvp8pay"),
         ("h264rtp", "rtph264pay"),
         ("vp8soft", "vp8enc"),

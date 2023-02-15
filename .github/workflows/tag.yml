@@ -2,6 +2,8 @@ name: tag
 
 on:
   pull_request:
+    branches:
+      - main
     types: [closed]
     paths:
       - Cargo.toml

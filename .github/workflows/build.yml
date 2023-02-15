@@ -7,77 +7,69 @@ on:
 
 jobs:
   build:
-    runs-on: ${{matrix.os}}
     strategy:
+      fail-fast: false
       matrix:
+        # a list of all the targets
         include:
-          - build: arm-v7
-            os: ubuntu-latest
-            rust: stable
-            target: armv7-unknown-linux-gnueabihf
-            linker: gcc-arm-linux-gnueabihf
-            cross: true
-          - build: macos
-            os: macos-latest
-            rust: stable
-            target: x86_64-apple-darwin
-            cross: false
+          - TARGET: x86_64-unknown-linux-musl # test in an alpine container on a mac
+            OS: ubuntu-latest
+          - TARGET: armv7-unknown-linux-musleabihf # raspberry pi 2-3-4, not tested
+            OS: ubuntu-latest
+          - TARGET: x86_64-apple-darwin # tested on a mac, is not properly signed so there are security warnings
+            OS: macos-latest
+    needs: test
+    runs-on: ${{ matrix.OS }}
+    env:
+      OS: ${{ matrix.OS }}
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 1
-
-      - name: Cache
+      - uses: actions/checkout@v2
+      - name: Cargo cache
         uses: actions/cache@v2
         with:
           path: |
             ~/.cargo/registry
-            ~/.cargo/git
-            ~/.rustup
-            target
-          key: ${{ runner.os }}-${{ matrix.rust }}
-
-      - name: Install Linker
-        if: matrix.cross
+            ./target
+          key: build-cargo-registry-${{matrix.TARGET}}
+      - name: List
+        run: find ./
+      - name: Install and configure dependencies
         run: |
-          sudo apt update
-          sudo apt install ${{ matrix.linker }}
-      - name: Install Rust
+          # dependencies are only needed on ubuntu as that's the only place where
+          # we make cross-compilation
+          if [[ $OS =~ ^ubuntu.*$ ]]; then
+            sudo apt-get install -qq crossbuild-essential-arm64 crossbuild-essential-armhf
+          fi
+          # some additional configuration for cross-compilation on linux
+          cat >>~/.cargo/config <<EOF
+          [target.armv7-unknown-linux-musleabihf]
+          linker = "arm-linux-gnueabihf-gcc"
+          EOF
+      - name: Install rust target
+        run: rustup target add $TARGET
+      - name: Run build
+        run: cargo build --release --verbose --target $TARGET
+      - name: List target
+        run: find ./target
+      - name: Compress
         run: |
-          rustup install ${{ matrix.rust }}
-          rustup target add ${{ matrix.target }}
-          rustup show
-      - name: Build
-        run: cargo build --release --target ${{ matrix.target }}
-
-      - name: Package Artifacts
-        run: |
-          src=$(pwd)
-          stage=
-          case $RUNNER_OS in
-              Linux)
-                  stage=$(mktemp -d)
-                  ;;
-              macOS)
-                  stage=$(mktemp -d -t tmp)
-                  ;;
-          esac
-          cp target/${{ matrix.target }}/release/sysit $stage/
-          cd $stage
-          RELEASE_VERSION=${GITHUB_REF#refs/tags/}
-          ASSET_NAME="sysit-$RELEASE_VERSION-${{ matrix.target }}.tar.gz"
-          ASSET_PATH="$src/$ASSET_NAME"
-          CHECKSUM_PATH="$ASSET_PATH.sha256"
-          echo "ASSET_PATH=$ASSET_PATH" >> $GITHUB_ENV
-          echo "CHECKSUM_PATH=$CHECKSUM_PATH" >> $GITHUB_ENV
-          tar czf $ASSET_PATH *
-          cd $src
-          case $RUNNER_OS in
-              Linux)
-                  sha256sum $ASSET_NAME > $CHECKSUM_PATH
-                  ;;
-              macOS)
-                  shasum -a 256 $ASSET_NAME > $CHECKSUM_PATH
-                  ;;
-          esac
+          mkdir -p ./artifacts
+          # windows is the only OS using a different convention for executable file name
+          if [[ $OS =~ ^windows.*$ ]]; then
+              EXEC=$NAME.exe
+          else
+              EXEC=$NAME
+          fi
+          if [[ $GITHUB_REF_TYPE =~ ^tag$ ]]; then
+            TAG=$GITHUB_REF_NAME
+          else
+            TAG=$GITHUB_SHA
+          fi
+          mv ./target/$TARGET/release/$EXEC ./$EXEC
+          tar -czf ./artifacts/$NAME-$TARGET-$TAG.tar.gz $EXEC
+      - name: Archive artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: result
+          path: |
+            ./artifacts

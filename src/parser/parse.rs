@@ -10,10 +10,8 @@ pub struct Cli {
     #[arg(long)]
     pub show: bool,
     /// host name of udpsink
-    #[arg(default_value = "localhost")]
     pub host: String,
     /// port number of udpsink
-    #[arg(default_value = "8080")]
     pub port: i32,
     /// source of video
     #[arg(value_enum, short, long, default_value = "test")]

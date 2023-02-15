@@ -5,11 +5,11 @@ $ gomast -h
 gomastreamer:
 Thin Rust wrapper for gstreamer, for development, for myself
 
-Usage: gomast [OPTIONS] <HOST> <PORT>
+Usage: gomast [OPTIONS] [HOST] [PORT]
 
 Arguments:
-  <HOST>  host name of udpsink
-  <PORT>  port number of udpsink
+  [HOST]  Host name of udpsink [default: example.com]
+  [PORT]  Port number of udpsink [default: 5000]
 
 Options:
       --show                     Show information of devices
@@ -51,6 +51,16 @@ gst-launch-1.0 -v v4l2src ! video/x-raw,width=640,height=480,framerate=30/1 ! vi
 gomastreamer is a wrapper for GStreamer.
 
 This tool provides a convenient command line interface for executing GStreamer shell commands.
+
+## Dependencies
+
+[GStreamer](https://gstreamer.freedesktop.org/)
+
+If you are using RaspberryPiOS, you can install GStreamer with the following command:
+
+```sh
+apt-get install libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libgstreamer-plugins-bad1.0-dev gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly gstreamer1.0-libav gstreamer1.0-doc gstreamer1.0-tools gstreamer1.0-x gstreamer1.0-alsa gstreamer1.0-gl gstreamer1.0-gtk3 gstreamer1.0-qt5 gstreamer1.0-pulseaudio
+```
 
 ## Download
 

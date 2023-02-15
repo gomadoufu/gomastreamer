@@ -52,6 +52,16 @@ gomastreamer is a wrapper for GStreamer.
 
 This tool provides a convenient command line interface for executing GStreamer shell commands.
 
+## Dependencies
+
+[GStreamer](https://gstreamer.freedesktop.org/)
+
+If you are using RaspberryPiOS, you can install GStreamer with the following command:
+
+```sh
+apt-get install libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libgstreamer-plugins-bad1.0-dev gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-bad gstreamer1.0-plugins-ugly gstreamer1.0-libav gstreamer1.0-doc gstreamer1.0-tools gstreamer1.0-x gstreamer1.0-alsa gstreamer1.0-gl gstreamer1.0-gtk3 gstreamer1.0-qt5 gstreamer1.0-pulseaudio
+```
+
 ## Download
 
 RaspberryPiOS and MacOS binaries are available from [Release](http://github.com/gomadoufu/gomastreamer/releases) page.

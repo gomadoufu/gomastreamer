@@ -8,13 +8,16 @@ fn main() {
     let cli = Cli::parse();
     let is_dry_run = cli.dry_run;
     if cli.show {
-        println!("Showing devices...");
-        let gst_device = Exec::new("gst-inspect-1.0".to_string(), vec![]);
+        let gst_plugins = Exec::new("gst-inspect-1.0".to_string(), vec![]);
+        let v4l2_ctl = Exec::new("v4l2-ctl --list-devices".to_string(), vec![]);
         if is_dry_run {
-            println!("gst-inspect-1.0");
+            println!("{}\n{}", "gst-inspect-1.0", "v4l2_ctl --list-devices");
             return;
         }
-        gst_device.exec();
+        println!("Available Devices...");
+        v4l2_ctl.exec();
+        println!("GStreamer plugins...");
+        gst_plugins.exec();
         return;
     }
     let converter = ArgConverter::new();

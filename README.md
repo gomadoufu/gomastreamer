@@ -5,18 +5,19 @@ $ gomast -h
 gomastreamer:
 Thin Rust wrapper for gstreamer, for development, for myself
 
-Usage: gomast [OPTIONS] [HOST] [PORT]
+Usage: gomast [OPTIONS] <HOST> <PORT>
 
 Arguments:
-  [HOST]  host name of udpsink [default: localhost]
-  [PORT]  port number of udpsink [default: 8080]
+  <HOST>  host name of udpsink
+  <PORT>  port number of udpsink
 
 Options:
-      --show                     show information of devices
-  -i, --input <INPUT>            source of video [default: test] [possible values: test, mipi, usb]
-  -r, --resolution <RESOLUTION>  resolution of video [default: vga] [possible values: vga, sd, hd]
-  -f, --format <FORMAT>          format of video [default: vp8] [possible values: vp8, h264]
-      --hardware                 use hardware encode
+      --show                     Show information of devices
+  -i, --input <INPUT>            Source of video [default: test] [possible values: test, mipi, usb]
+  -r, --resolution <RESOLUTION>  Resolution of video [default: vga] [possible values: vga, sd, hd]
+  -f, --format <FORMAT>          Format of video [default: h264] [possible values: vp8, h264]
+      --hardware                 Use hardware encode
+      --dry-run                  Dry-run mode, just print command
   -h, --help                     Print help
   -V, --version                  Print version
 
@@ -40,6 +41,9 @@ rtp:  rtph264depay: RTP H264 depayloader
 rtp:  rtph264pay: RTP H264 payloader
 typefindfunctions: video/x-h264: h264, x264, 264
 videoparsersbad:  h264parse: H.264 parser
+
+$ gomast --dry-run -i usb -f h264 example.com 5000
+gst-launch-1.0 -v v4l2src ! video/x-raw,width=640,height=480,framerate=30/1 ! videoconvert ! x264enc ! rtph264pay ! udpsink  host=example.com  port=5000
 ```
 
 ## About
@@ -56,7 +60,7 @@ RaspberryPiOS and MacOS binaries are available from [Release](http://github.com/
 
 Format: `gomast [OPTIONS] [HOST] [PORT]`.
 
-The HOST and PORT arguments correspond to the host and port arguments of the GStreamer `udpsink` element.
+The HOST and PORT arguments correspond to the host and port arguments of the GStreamer `udpsink` element. There are required arguments.
 
 e.g. `gomast -i test -r sd -f vp8` will translate to:
 
@@ -74,6 +78,6 @@ For more information on the available options and their usage, run `gomast --hel
 
 ## Future
 
-- [ ] Dry run mode
+- [x] Dry run mode
 - [x] gomast show (= gst-inspect; show available devices)
 - [ ] load environment variables

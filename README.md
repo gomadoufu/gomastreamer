@@ -5,11 +5,11 @@ $ gomast -h
 gomastreamer:
 Thin Rust wrapper for gstreamer, for development, for myself
 
-Usage: gomast [OPTIONS] <HOST> <PORT>
+Usage: gomast [OPTIONS] [HOST] [PORT]
 
 Arguments:
-  <HOST>  host name of udpsink
-  <PORT>  port number of udpsink
+  [HOST]  Host name of udpsink [default: example.com]
+  [PORT]  Port number of udpsink [default: 5000]
 
 Options:
       --show                     Show information of devices

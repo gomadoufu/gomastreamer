@@ -20,7 +20,7 @@ jobs:
             OS: macos-latest
     runs-on: ${{ matrix.OS }}
     env:
-      NAME: gomastreamer # change with the name of your project
+      NAME: gomast # change with the name of your project
       TARGET: ${{ matrix.TARGET }}
       OS: ${{ matrix.OS }}
     steps:

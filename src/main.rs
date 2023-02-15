@@ -11,7 +11,7 @@ fn main() {
         let gst_plugins = Exec::new("gst-inspect-1.0".to_string(), vec![]);
         let v4l2_ctl = Exec::new("v4l2-ctl --list-devices".to_string(), vec![]);
         if is_dry_run {
-            println!("{}\n{}", "gst-inspect-1.0", "v4l2_ctl --list-devices");
+            println!("gst-inspect-1.0 \n v4l2_ctl --list-devices");
             return;
         }
         println!("Available Devices...");

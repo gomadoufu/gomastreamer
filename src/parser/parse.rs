@@ -4,7 +4,7 @@ use clap::{Parser, ValueEnum};
 #[command(name = "gomastreamer")]
 #[command(author = "gomadoufu")]
 #[command(version)] // version is automatically detected from Cargo.toml
-#[command(about = "gomastreamer:\nThin Rust wrapper for gstreamer, for development, for myself", long_about = None)]
+#[command(about = "gomastreamer:\nThin wrapper for gstreamer, for development", long_about = None)]
 pub struct Cli {
     /// Show information of devices
     #[arg(long)]
@@ -21,10 +21,13 @@ pub struct Cli {
     /// Resolution of video
     #[arg(value_enum, short, long, default_value = "vga")]
     pub resolution: Resolution,
+    /// Framerate of video
+    #[arg(short, long, default_value = "30")]
+    pub framerate: i32,
     //フォーマットは将来増えるかもしれないのでブーリアンにしない
     /// Format of video
-    #[arg(value_enum, short, long, default_value = "h264")]
-    pub format: Format,
+    #[arg(value_enum, short = 't', long = "type", default_value = "h264")]
+    pub video_type: VideoType,
     /// Use hardware encode
     #[arg(long = "hardware")]
     pub hardware_encode: bool,
@@ -48,7 +51,7 @@ pub enum Resolution {
 }
 
 #[derive(Debug, Clone, ValueEnum)]
-pub enum Format {
+pub enum VideoType {
     Vp8,
     H264,
 }

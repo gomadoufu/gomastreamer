@@ -64,7 +64,8 @@ apt-get install libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev libgstreame
 
 ## Download
 
-RaspberryPiOS and MacOS binaries are available from [Release](http://github.com/gomadoufu/gomastreamer/releases) page.
+RaspberryPiOS(armv7-unknown-linux-musl), Linux(unknown-linux-musl), and MacOS(apple-darwin)  
+binaries are available from [Release](http://github.com/gomadoufu/gomastreamer/releases) page.
 
 ## Usage
 

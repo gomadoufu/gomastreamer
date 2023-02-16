@@ -1,38 +1,34 @@
 # gomastreamer
 
+Thin wrapper for GStreamer, for development and testing on RaspberryPi.
+
 ```sh
-$ gomast -h
-gomastreamer:
-Thin Rust wrapper for gstreamer, for development, for myself
-
-Usage: gomast [OPTIONS] [HOST] [PORT]
-
-Arguments:
-  [HOST]  Host name of udpsink [default: example.com]
-  [PORT]  Port number of udpsink [default: 5000]
-
-Options:
-      --show                     Show information of devices
-  -i, --input <INPUT>            Source of video [default: test] [possible values: test, mipi, usb]
-  -r, --resolution <RESOLUTION>  Resolution of video [default: vga] [possible values: vga, sd, hd]
-  -f, --format <FORMAT>          Format of video [default: h264] [possible values: vp8, h264]
-      --hardware                 Use hardware encode
-      --dry-run                  Dry-run mode, just print command
-  -h, --help                     Print help
-  -V, --version                  Print version
-
+# use default options (test video, vga, 30fps, h264)
 $ gomast example.com 5000
-Running: gst-launch-1.0 videotestsrc ! video/x-raw,width=640,height=480,framerate=30/1 ! videoconvert ! vp8enc ! rtpvp8pay ! udpsink  host=example.com  port=5000
+Running: gst-launch-1.0 videotestsrc ! video/x-raw,width=640,height=480,framerate=30/1 ! videoconvert ! x264enc ! rtph264pay ! udpsink  host=example.com  port=5000
 Setting pipeline to PAUSED ...
 Pipeline is PREROLLING ...
-Redistribute latency...
-Pipeline is PREROLLED ...
-Setting pipeline to PLAYING ...
-Redistribute latency...
+...
 
-$ gomast -i mipi -r hd -f h264 --hardware example.com 5000
-Running: gst-launch-1.0 libcamerasrc ! video/x-raw,width=1280,height=720,framerate=30/1 ! videoconvert ! v4l2h264enc 'video/x-h264,level=(string)4' ! rtph264pay ! udpsink  host=example.com  port=5000
+# use custom options (mipi video, hd, 60fps, vp8)
+$ gomast myserver.com 7000 -i mipi -f 60 -t vp8 -r hd
+Running: gst-launch-1.0 libcamerasrc ! video/x-raw,width=1280,height=720,framerate=60/1 ! videoconvert ! vp8enc ! rtpvp8pay ! udpsink  host=myserver.com  port=7000
+Setting pipeline to PAUSED ...
+Pipeline is PREROLLING ...
+...
 
+# use hardware encoder
+$ gomast myserver.com 7000 -9 usb --hardware
+Running: gst-launch-1.0 -v v4l2src ! video/x-raw,width=640,height=480,framerate=30/1 ! videoconvert ! v4l2h264enc ! 'video/x-h264,level=(string)4' ! rtph264pay ! udpsink  host=myserver.com  port=7000
+Setting pipeline to PAUSED ...
+Pipeline is PREROLLING ...
+...
+
+# dry-run mode
+$ gomast myserver.com 7000 --dry-run
+gst-launch-1.0 videotestsrc ! video/x-raw,width=640,height=480,framerate=30/1 ! videoconvert ! x264enc ! rtph264pay ! udpsink  host=myserver.com  port=7000
+
+# show available devices
 $ gomast --show | grep h264
 applemedia:  vtenc_h264: H.264 encoder
 applemedia:  vtenc_h264_hw: H.264 (HW only) encoder
@@ -42,8 +38,6 @@ rtp:  rtph264pay: RTP H264 payloader
 typefindfunctions: video/x-h264: h264, x264, 264
 videoparsersbad:  h264parse: H.264 parser
 
-$ gomast --dry-run -i usb -f h264 example.com 5000
-gst-launch-1.0 -v v4l2src ! video/x-raw,width=640,height=480,framerate=30/1 ! videoconvert ! x264enc ! rtph264pay ! udpsink  host=example.com  port=5000
 ```
 
 ## About
@@ -70,19 +64,23 @@ RaspberryPiOS and MacOS binaries are available from [Release](http://github.com/
 
 Format: `gomast [OPTIONS] [HOST] [PORT]`.
 
+You can specify the following options:
+
+-i, --input : Source of video [default: test] [possible values: test, mipi, usb]
+
+-r, --resolution : Resolution of video [default: vga] [possible values: vga, sd, hd]
+
+-f, --framerate : Framerate of video [default: 30]
+
+-t, --type : Format of video [default: h264] [possible values: vp8, h264]
+
+--hardware : Use hardware encode
+
+--dry-run : Dry-run mode, just print command
+
+--show : Show information of devices
+
 The HOST and PORT arguments correspond to the host and port arguments of the GStreamer `udpsink` element. There are required arguments.
-
-e.g. `gomast -i test -r sd -f vp8` will translate to:
-
-```sh
-gst-launch-1.0 videotestsrc ! video/x-raw,width=800,height=600,framerate=30/1 ! videoconvert ! vp8enc ! rtpvp8pay ! udpsink host=localhost port=8080
-```
-
-And `gomast example.com 5000 -i mipi -r vga -f h264 --hardware` will translate to:
-
-```sh
-gst-launch-1.0 libcamerasrc ! video/x-raw,width=640,height=480,framerate=30/1 ! videoconvert ! v4l2h264enc 'video/x-h264,level=(string)4' ! rtph264pay ! udpsink host=example.com port=5000
-```
 
 For more information on the available options and their usage, run `gomast --help`.
 

@@ -1,4 +1,4 @@
-use super::parse::{Cli, Format, Input, Resolution};
+use super::parse::{Cli, Input, Resolution, VideoType};
 use std::{collections::HashMap, vec};
 
 #[derive(Debug)]
@@ -18,13 +18,15 @@ impl ArgConverter {
         let mut result = vec![];
         result.push(self.match_input(&cli));
         result.push("!".to_string());
+        // カメラから、指定された解像度の映像を取得しておく。後で変換しない。
         result.push(format!(
-            "{}{}{}",
-            "video/x-raw,",
+            "{},{},{}",
+            "video/x-raw",
             self.match_resolution(&cli),
-            ",framerate=30/1"
+            format!("framerate={}/1", cli.framerate)
         ));
         result.push("!".to_string());
+        //色の変換だけここでする
         result.push("videoconvert".to_string());
         result.push("!".to_string());
         result.push(self.match_format(&cli));
@@ -56,20 +58,22 @@ impl ArgConverter {
     }
 
     fn match_format(&self, cli: &Cli) -> String {
-        match cli.format {
-            Format::Vp8 if cli.hardware_encode => self.arg_map.get("vp8hard").unwrap().to_string(),
-            Format::H264 if cli.hardware_encode => {
+        match cli.video_type {
+            VideoType::Vp8 if cli.hardware_encode => {
+                self.arg_map.get("vp8hard").unwrap().to_string()
+            }
+            VideoType::H264 if cli.hardware_encode => {
                 self.arg_map.get("h264hard").unwrap().to_string()
             }
-            Format::Vp8 => self.arg_map.get("vp8soft").unwrap().to_string(),
-            Format::H264 => self.arg_map.get("h264soft").unwrap().to_string(),
+            VideoType::Vp8 => self.arg_map.get("vp8soft").unwrap().to_string(),
+            VideoType::H264 => self.arg_map.get("h264soft").unwrap().to_string(),
         }
     }
 
     fn select_rtp(&self, cli: &Cli) -> String {
-        match cli.format {
-            Format::Vp8 => self.arg_map.get("vp8rtp").unwrap().to_string(),
-            Format::H264 => self.arg_map.get("h264rtp").unwrap().to_string(),
+        match cli.video_type {
+            VideoType::Vp8 => self.arg_map.get("vp8rtp").unwrap().to_string(),
+            VideoType::H264 => self.arg_map.get("h264rtp").unwrap().to_string(),
         }
     }
 }

@@ -23,7 +23,7 @@ impl ArgConverter {
             "{},{},{}",
             "video/x-raw",
             self.match_resolution(&cli),
-            format!("framerate={}/1", cli.framerate)
+            format_args!("framerate={}/1", cli.framerate)
         ));
         result.push("!".to_string());
         //色の変換だけここでする

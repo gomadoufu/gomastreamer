@@ -1,16 +1,21 @@
 mod executor;
 mod parser;
-use crate::executor::exec::Exec;
-use crate::parser::{convert::ArgConverter, parse::Cli};
+use crate::{
+    executor::{build::Builder, exec::Exec},
+    parser::{destruct::Elements, parse::Cli},
+};
 use clap::Parser;
 
 fn main() {
     let cli = Cli::parse();
-    let is_dry_run = cli.dry_run;
-    if cli.show {
+    println!("{:?}", cli);
+    let destructed = Elements::destruct(cli);
+    let dry_run = destructed.dry_run;
+    println!("{:?}", destructed);
+    if destructed.show {
         let gst_plugins = Exec::new("gst-inspect-1.0".to_string(), vec![]);
         let v4l2_ctl = Exec::new("v4l2-ctl --list-devices".to_string(), vec![]);
-        if is_dry_run {
+        if dry_run {
             println!("gst-inspect-1.0 \n v4l2_ctl --list-devices");
             return;
         }
@@ -20,9 +25,10 @@ fn main() {
         gst_plugins.exec();
         return;
     }
-    let converter = ArgConverter::new();
-    let result = converter.convert(cli);
-    if is_dry_run {
+    let builder = Builder::new(destructed);
+    println!("{:?}", builder.build());
+    let result = builder.build();
+    if dry_run {
         println!("gst-launch-1.0 {}", result.join(" "));
         return;
     }

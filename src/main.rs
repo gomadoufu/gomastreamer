@@ -8,10 +8,8 @@ use clap::Parser;
 
 fn main() {
     let cli = Cli::parse();
-    println!("{:?}", cli);
     let destructed = Elements::destruct(cli);
     let dry_run = destructed.dry_run;
-    println!("{:?}", destructed);
     if destructed.show {
         let gst_plugins = Exec::new("gst-inspect-1.0".to_string(), vec![]);
         let v4l2_ctl = Exec::new("v4l2-ctl --list-devices".to_string(), vec![]);
@@ -26,7 +24,6 @@ fn main() {
         return;
     }
     let builder = Builder::new(destructed);
-    println!("{:?}", builder.build());
     let result = builder.build();
     if dry_run {
         println!("gst-launch-1.0 {}", result.join(" "));

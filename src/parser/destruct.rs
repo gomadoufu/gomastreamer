@@ -17,6 +17,18 @@ pub struct Elements {
 impl Elements {
     pub fn destruct(cli: Cli) -> Elements {
         match cli.input {
+            Command::Show => Elements {
+                itype: InputType::Test,
+                iformat: InputFormat::Yuy2,
+                iwidth: 0,
+                iheight: 0,
+                oformat: OutputFormat::H264,
+                ohost: "".to_string(),
+                oport: 0,
+                hardware: false,
+                dry_run: false,
+                show: true,
+            },
             Command::Input(input) => {
                 let itype = input.input_type;
                 let iformat = input.format;
@@ -29,7 +41,7 @@ impl Elements {
                         let oport = output.port;
                         let hardware = output.hardware_encode;
                         let dry_run = output.dry_run;
-                        let show = output.show;
+                        let show = false;
                         Elements {
                             itype,
                             iformat,

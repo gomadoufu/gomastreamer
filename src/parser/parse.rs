@@ -14,6 +14,8 @@ pub struct Cli {
 
 #[derive(Subcommand, Debug)]
 pub enum Command {
+    /// Show available devices and plugins
+    Show,
     /// INPUT. For help with OUTPUT, run 'gomast input output --help'
     Input(InputArgs),
 }
@@ -44,9 +46,6 @@ pub struct OutputArgs {
     pub host: String,
     /// Port number of udpsink
     pub port: i32,
-    /// Show information of devices
-    #[arg(long)]
-    pub show: bool,
     /// Resolution of video
     #[arg(long = "hardware")]
     pub hardware_encode: bool,
